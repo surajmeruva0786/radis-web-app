@@ -1,25 +1,29 @@
 import React from "react"; // Add this line
 
 import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Input from "@mui/joy/Input";
 import { Controller, useFormContext } from "react-hook-form";
 
 import Divider from "@mui/joy/Divider";
 import { PressureUnit } from "./PressureUnits";
+import { FitCheckbox } from "./FitCheckbox";
+import useFromStore from "../../store/form";
+import useFitFormStore from "../../store/fitForm";
 
 export const Pressure: React.FC = () => {
   const { control } = useFormContext();
+  const { formMode } = useFromStore();
+  const { selected_fit_parameters } = useFitFormStore();
 
   return (
     <Controller
-      name="pressure"
+      name={formMode === "calc" ? "pressure" : selected_fit_parameters?.pressure ? "fit_parameters.pressure" : "experimental_conditions.pressure"}
       control={control}
       defaultValue={1.01325}
       render={({ field, fieldState }) => (
         <FormControl>
-          <FormLabel>Pressure</FormLabel>
+          <FitCheckbox fitParameter="pressure" />
           <Input
             {...field}
             id="pressure-input"
