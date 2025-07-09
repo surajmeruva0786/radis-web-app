@@ -7,6 +7,7 @@ import {
 } from "@mui/joy";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { InfoPopover } from "./InfoPopover";
+import { Settings } from "./Settings";
 import logo from "../radis.png";
 import { useColorScheme } from '@mui/joy/styles';
 import LightModeIcon from "@mui/icons-material/LightMode"; // Sun
@@ -48,7 +49,6 @@ export const Header: React.FC = () => {
               <GitHubIcon sx={{ color: mode === "dark" ? "white" : "", fontSize: 28 }} />
             </IconButton>
             <IconButton
-              sx={{ ml: 1 }}
               onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
             >
               {mode === "dark" ? (
@@ -57,6 +57,7 @@ export const Header: React.FC = () => {
                 <LightModeIcon />
               )}
             </IconButton>
+            <Settings />
             <InfoPopover />
           </Box>
         </Box>

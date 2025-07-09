@@ -9,6 +9,7 @@ interface TFromState {
   simulateSlitUnit: boolean; // slit unit
   disableDownloadButton: boolean; // disableDownloadButton
   disableAddToPlotButton: boolean;
+  localBackend: boolean;
 }
 
 interface TFromActions {
@@ -19,6 +20,7 @@ interface TFromActions {
   setSimulateSlitUnit: (value: boolean) => void; // change the unit according to the wavelength unit selected
   setDisableDownloadButton: (value: boolean) => void;
   setDisableAddToPlotButton: (value: boolean) => void;
+  setLocalBackend: (value: boolean) => void;
 }
 
 const useFromStore = create<TFromState & TFromActions>()(
@@ -30,6 +32,7 @@ const useFromStore = create<TFromState & TFromActions>()(
     simulateSlitUnit: false,
     disableDownloadButton: true,
     disableAddToPlotButton: true,
+    localBackend: false,
     toggleIsNonEquilibrium: (value: boolean) =>
       set(() => ({
         isNonEquilibrium: value,
@@ -59,6 +62,10 @@ const useFromStore = create<TFromState & TFromActions>()(
     setDisableAddToPlotButton: (value: boolean) =>
       set(() => ({
         disableAddToPlotButton: value,
+      })),
+    setLocalBackend: (value: boolean) =>
+      set(() => ({
+        localBackend: value,
       })),
   }))
 );
