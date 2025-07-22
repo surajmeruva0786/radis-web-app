@@ -9,6 +9,8 @@ import { MoleculeSelector } from "../MoleculeSelector/MoleculeSelector";
 import { Database, FitFormValues, FormValues } from "../../types";
 import { BoundingRanges } from "../BoundingRanges";
 import useFitFormStore from "../../../store/fitForm";
+import FormLabel from "@mui/joy/FormLabel";
+import Checkbox from "@mui/joy/Checkbox";
 
 export interface SpeciesProps {
     control: Control<FitFormValues>;
@@ -44,7 +46,7 @@ export const Specie: React.FC<SpeciesProps> = ({
                     )}
                 />
             </Grid>
-            <Grid xs={12} sm={6} md={8} xl={selected_fit_parameters?.mole_fraction ? 4 : 10}>
+            <Grid xs={12} sm={6} md={8} xl={selected_fit_parameters?.mole_fraction ? 2 : 8}>
                 <Controller
                     name={selected_fit_parameters?.mole_fraction ? "fit_parameters.mole_fraction" : "experimental_conditions.specie.mole_fraction"}
                     control={control}
@@ -75,6 +77,25 @@ export const Specie: React.FC<SpeciesProps> = ({
                         </FormControl>
                     )}
                 />
+            </Grid>
+            <Grid xs={2}>
+                {databaseWatch === Database.NIST ? null : (
+                    <Controller
+                        name={`experimental_conditions.specie.is_all_isotopes` as const}
+                        control={control}
+                        render={({ field }) => (
+                            <FormControl>
+                                <FormLabel>All isotopes</FormLabel>
+                                <Checkbox
+                                    checked={field.value}
+                                    onChange={(e) => {
+                                        field.onChange(e.target.checked);
+                                    }}
+                                />
+                            </FormControl>
+                        )}
+                    />
+                )}
             </Grid>
             {selected_fit_parameters?.mole_fraction && (
                 <Grid xs={12} sm={12} md={12} xl={6}>

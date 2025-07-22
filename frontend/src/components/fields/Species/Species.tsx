@@ -11,6 +11,7 @@ import Input from "@mui/joy/Input";
 import { Controller, Control, useFieldArray } from "react-hook-form";
 import { MoleculeSelector } from "../MoleculeSelector/MoleculeSelector";
 import { Database, FitFormValues, FormValues } from "../../types";
+import Checkbox from "@mui/joy/Checkbox";
 export interface SpeciesProps {
   control: Control<FormValues>;
   isNonEquilibrium: boolean;
@@ -30,7 +31,7 @@ export const Species: React.FC<SpeciesProps> = ({
     <Grid container spacing={3}>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
-          <Grid xs={6}>
+          <Grid xs={4}>
             <Controller
               name={`species.${index}.molecule` as const}
               control={control}
@@ -80,6 +81,25 @@ export const Species: React.FC<SpeciesProps> = ({
                 </FormControl>
               )}
             />
+          </Grid>
+          <Grid xs={2}>
+            {databaseWatch === Database.NIST ? null : (
+              <Controller
+                name={`species.${index}.is_all_isotopes` as const}
+                control={control}
+                render={({ field }) => (
+                  <FormControl>
+                    <FormLabel>All isotopes</FormLabel>
+                    <Checkbox
+                      checked={field.value}
+                      onChange={(e) => {
+                        field.onChange(e.target.checked);
+                      }}
+                    />
+                  </FormControl>
+                )}
+              />
+            )}
           </Grid>
           <Grid xs={2} style={{ marginTop: 24 }}>
             {index === 0 ? (
