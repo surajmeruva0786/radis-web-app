@@ -92,7 +92,7 @@ export const Species: React.FC<SpeciesProps> = ({
                   <FormControl>
                     <FormLabel>
                       <Info
-                        helpText="<strong>Isotopologue:</strong> When this checkbox is checked, only the first isotopologue of the molecule will be used in the calculation. When unchecked, all available isotopologues will be included."
+                        helpText="<strong>Isotopologue:</strong> When this checkbox is unchecked, only the first isotopologue of the molecule will be used in the calculation. When checked, all available isotopologues will be included."
                         size="sm"
                       />
                       Isotopologue
