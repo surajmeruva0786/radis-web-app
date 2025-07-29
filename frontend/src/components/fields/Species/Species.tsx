@@ -12,6 +12,7 @@ import { Controller, Control, useFieldArray } from "react-hook-form";
 import { MoleculeSelector } from "../MoleculeSelector/MoleculeSelector";
 import { Database, FitFormValues, FormValues } from "../../types";
 import Checkbox from "@mui/joy/Checkbox";
+import { Info } from "../../Info";
 export interface SpeciesProps {
   control: Control<FormValues>;
   isNonEquilibrium: boolean;
@@ -82,14 +83,20 @@ export const Species: React.FC<SpeciesProps> = ({
               )}
             />
           </Grid>
-          <Grid xs={2}>
+          <Grid xs={3}>
             {databaseWatch === Database.NIST ? null : (
               <Controller
                 name={`species.${index}.is_all_isotopes` as const}
                 control={control}
                 render={({ field }) => (
                   <FormControl>
-                    <FormLabel>All isotopes</FormLabel>
+                    <FormLabel>
+                      <Info
+                        helpText="<strong>Isotopologue:</strong> When this checkbox is checked, only the first isotopologue of the molecule will be used in the calculation. When unchecked, all available isotopologues will be included."
+                        size="sm"
+                      />
+                      Isotopologue
+                    </FormLabel>
                     <Checkbox
                       checked={field.value}
                       onChange={(e) => {
@@ -101,7 +108,7 @@ export const Species: React.FC<SpeciesProps> = ({
               />
             )}
           </Grid>
-          <Grid xs={2} style={{ marginTop: 24 }}>
+          <Grid xs={1} style={{ marginTop: 24 }}>
             {index === 0 ? (
               <IconButton
                 color="primary"

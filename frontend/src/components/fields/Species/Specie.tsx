@@ -11,6 +11,7 @@ import { BoundingRanges } from "../BoundingRanges";
 import useFitFormStore from "../../../store/fitForm";
 import FormLabel from "@mui/joy/FormLabel";
 import Checkbox from "@mui/joy/Checkbox";
+import { Info } from "../../Info";
 
 export interface SpeciesProps {
     control: Control<FitFormValues>;
@@ -85,7 +86,13 @@ export const Specie: React.FC<SpeciesProps> = ({
                         control={control}
                         render={({ field }) => (
                             <FormControl>
-                                <FormLabel>All isotopes</FormLabel>
+                                <FormLabel>
+                                    <Info
+                                        helpText="<strong>Isotopologue:</strong> When this checkbox is unchecked, only the first isotopologue of the molecule will be used in the calculation. When checked, all available isotopologues will be included."
+                                        size="sm"
+                                    />
+                                    Iso
+                                </FormLabel>
                                 <Checkbox
                                     checked={field.value}
                                     onChange={(e) => {
