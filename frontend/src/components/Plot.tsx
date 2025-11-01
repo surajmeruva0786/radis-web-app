@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Plotly from "react-plotly.js";
 import { LayoutAxis } from "plotly.js";
 import { useColorScheme } from '@mui/joy/styles';
@@ -31,6 +31,9 @@ export const Plot_: React.FC<PlotProps> = ({
   plotSettings: { mode, units },
 }) => {
   const { mode: colorMode } = useColorScheme();
+  const plotRef = useRef<Plotly.PlotlyHTMLElement>(null);
+  const previousXRangeRef = useRef<[number, number] | null>(null);
+  const isRevertingRef = useRef<boolean>(false);
   let modeLabel = "";
   if (mode === "absorbance") {
     modeLabel = "Absorbance";
@@ -240,6 +243,66 @@ export const Plot_: React.FC<PlotProps> = ({
           toImageButtonOptions: {
             filename: generateFileName(spectra),
           },
+          modeBarButtonsToRemove: [
+            'select2d',
+            'lasso2d',
+            'autoScale2d',
+            'hoverClosestCartesian',
+            'hoverCompareCartesian',
+          ],
+          // Disable horizontal span zoom by removing zoom buttons that could trigger it
+          // and ensure only box zoom and vertical span are available
+        }}
+        onRelayout={(event) => {
+          // Skip handling if we're programmatically reverting a zoom to prevent infinite loops
+          if (isRevertingRef.current) {
+            isRevertingRef.current = false;
+            return;
+          }
+
+          // Prevent horizontal-only zoom by detecting when only x-axis range changes
+          // without a corresponding y-axis range change
+          if (event['xaxis.range[0]'] !== undefined && event['xaxis.range[1]'] !== undefined) {
+            // Check if y-axis range was NOT changed (indicating horizontal-only zoom)
+            if (event['yaxis.range[0]'] === undefined && event['yaxis.range[1]'] === undefined) {
+              // This is a horizontal-only zoom - revert it
+              isRevertingRef.current = true;
+              if (plotRef.current && previousXRangeRef.current) {
+                Plotly.relayout(plotRef.current, {
+                  'xaxis.range': previousXRangeRef.current,
+                  'xaxis.autorange': false,
+                });
+              } else if (plotRef.current) {
+                // If we don't have a previous range, reset to autorange
+                Plotly.relayout(plotRef.current, {
+                  'xaxis.autorange': true,
+                });
+              }
+              return;
+            }
+            // Store the x-axis range if both axes changed (box zoom) or only y changed (vertical zoom)
+            previousXRangeRef.current = [
+              event['xaxis.range[0]'] as number,
+              event['xaxis.range[1]'] as number,
+            ];
+          } else if (event['yaxis.range[0]'] !== undefined && event['yaxis.range[1]'] !== undefined) {
+            // Vertical-only zoom is allowed - just store the current x range if available
+            if (plotRef.current) {
+              const currentLayout = (plotRef.current as any).layout;
+              if (currentLayout?.xaxis?.range) {
+                previousXRangeRef.current = currentLayout.xaxis.range;
+              }
+            }
+          } else if (event['xaxis.autorange'] === true) {
+            // Autorange reset - clear stored range
+            previousXRangeRef.current = null;
+          }
+        }}
+        onInitialized={(figure, graphDiv) => {
+          plotRef.current = graphDiv as Plotly.PlotlyHTMLElement;
+        }}
+        onUpdate={(figure, graphDiv) => {
+          plotRef.current = graphDiv as Plotly.PlotlyHTMLElement;
         }}
       />
     </div>
